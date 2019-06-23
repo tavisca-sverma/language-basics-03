@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 {
-    public static class Program
+   public static class Program
     {
         static void Main(string[] args)
         {
@@ -41,7 +42,104 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
         public static int[] SelectMeals(int[] protein, int[] carbs, int[] fat, string[] dietPlans)
         {
             // Add your code here.
-            throw new NotImplementedException();
+            int totalMeals=protein.Length; 
+            int totalDietPlans=dietPlans.Length;
+            int[] calories=new int[totalMeals];
+            int[] result=new int[totalDietPlans];
+
+             for(int i=0;i<totalMeals;i++){
+                calories[i]= (protein[i]*5 + carbs[i]*5 + fat[i]*9);
+            }
+           
+           List<int> shortlistedMeals=new List<int>();//will store index of meals selected by priority
+           
+
+           for(int i=0;i<totalDietPlans;i++){
+               
+               shortlistedMeals.Clear();
+               
+               for(int k=0;k<totalMeals;k++){//adding all meals initially
+                     shortlistedMeals.Add(k);
+                    }
+               
+               String currentDietPlan=dietPlans[i];
+        
+               for(int j=0;j<currentDietPlan.Length;j++){
+                    char nutrient=currentDietPlan[j];
+
+                    if(shortlistedMeals.Count==1)//condition if only one meal can be selected
+                    break;
+
+                     switch(nutrient)
+                        {
+                             case 'P': shortlistedMeals=Maximise(protein,shortlistedMeals);
+                                        break;
+                             case 'p': shortlistedMeals=Minimise(protein,shortlistedMeals);
+                                        break;
+                             case 'C': shortlistedMeals=Maximise(carbs,shortlistedMeals);
+                                        break;
+                             case 'c': shortlistedMeals=Minimise(carbs,shortlistedMeals);
+                                        break;
+                             case 'F': shortlistedMeals=Maximise(fat,shortlistedMeals);
+                                        break;
+                             case 'f': shortlistedMeals=Minimise(fat,shortlistedMeals);
+                                        break;
+                             case 'T': shortlistedMeals=Maximise(calories,shortlistedMeals);
+                                        break;
+                             case 't': shortlistedMeals=Minimise(calories,shortlistedMeals);
+                                        break;                      
+                         }
+
+               }
+
+            result[i]=shortlistedMeals[0];
+           } 
+          
+          return result;
         }
+
+
+      public static List<int> Maximise(int[] nutrient,List<int> shortlistedMeals){//Find maximum of given nutreint and add that meal to list
+           int max=-1;
+           List<int> toReturnMeals=new List<int>();
+
+           for(int i=0;i<shortlistedMeals.Count;i++){
+               if(nutrient[shortlistedMeals[i]]>max)
+                   max=nutrient[shortlistedMeals[i]];
+
+           }
+           
+           for(int i=0;i<shortlistedMeals.Count;i++){
+
+               if(nutrient[shortlistedMeals[i]]==max)
+                   {
+                       toReturnMeals.Add(shortlistedMeals[i]);
+                   }
+
+           }
+          return toReturnMeals;   
+      }
+
+
+  public static List<int> Minimise(int[] nutrient,List<int> shortlistedMeals){//Find minimum of given nutreint and add that meal to list
+           int min=2000;
+           List<int> toReturnMeals=new List<int>();
+           for(int i=0;i<shortlistedMeals.Count;i++){
+
+               if(nutrient[shortlistedMeals[i]]<min)
+                   min=nutrient[shortlistedMeals[i]];
+
+           }
+           for(int i=0;i<shortlistedMeals.Count;i++){
+
+               if(nutrient[shortlistedMeals[i]]==min)
+                   {
+                       toReturnMeals.Add(shortlistedMeals[i]);
+                   }
+
+           }
+
+          return toReturnMeals;   
+      }
     }
 }
